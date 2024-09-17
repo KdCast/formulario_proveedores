@@ -66,6 +66,11 @@
             font-size: 14px;
             text-align: center;
         }
+        .success {
+            color: green;
+            font-size: 14px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +101,7 @@
         </form>
         <p class="note">Asegúrese de que la factura esté en formato PDF, XML o ZIP. La factura debe ser legible y contener toda la información requerida.</p>
         <p id="error-message" class="error"></p>
+        <p id="success-message" class="success"></p>
     </div>
 
     <script>
@@ -156,6 +162,33 @@
             const dateInput = document.getElementById('invoiceDate');
             dateInput.setAttribute('min', minDateString);
             dateInput.setAttribute('max', maxDateString);
+        });
+
+        // Manejo del envío del formulario con fetch
+        document.getElementById('invoiceUploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Previene el envío normal del formulario
+
+            const formData = new FormData(this);
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            try {
+                const response = await fetch('ruta_del_servidor', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    successMessage.textContent = 'El documento se cargó correctamente.';
+                } else {
+                    errorMessage.textContent = 'Hubo un problema al cargar el documento. Inténtelo de nuevo.';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Hubo un problema con la conexión. Inténtelo de nuevo.';
+            }
         });
     </script>
 </body>
